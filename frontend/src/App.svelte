@@ -23,18 +23,26 @@
   // Events.On("time", (timeValue) => {
   //   time = timeValue.data;
   // });
+  Events.On("blur", () => {
+    window;
+  });
 </script>
 
 <div class="container">
-  <h1 class="greeting">Hello!</h1>
+  <input type="text" class="searchbar" />
 </div>
 
 <style>
   /* Put your standard CSS here */
-  h1 {
+  .searchbar {
+    width: 100%;
+    height: 100%;
+    background: transparent;
     color: white;
+    font-size: x-large;
   }
   .container {
-    background-color: blue;
+    height: 80px;
+    width: 600px;
   }
 </style>

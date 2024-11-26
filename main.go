@@ -122,8 +122,11 @@ func setupHotkey() {
 			// log.Println("Pressed")
 			if window.IsVisible() {
 				window.Hide()
+				log.Println(window.IsFocused())
 			} else {
 				window.Show()
+				window.Focus()
+				log.Println(window.IsFocused())
 			}
 		}
 	}()
