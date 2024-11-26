@@ -1,0 +1,17 @@
+!**/glob-import/dir/node_modules
+.DS_Store
+.idea
+.pnpm-store
+*.cpuprofile
+*.local
+*.log
+/.vscode/
+/docs/.vitepress/cache
+/packages/vite/LICENSE
+frontend/dist-ssr
+frontend/explorations
+frontend/node_modules
+frontend/playground-temp
+frontend/temp
+frontend/TODOs.md
+frontend/.eslintcache
