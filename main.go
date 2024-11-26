@@ -9,6 +9,7 @@ import (
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 	"github.com/wailsapp/wails/v3/pkg/icons"
+	"golang.design/x/hotkey"
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -18,6 +19,10 @@ import (
 
 //go:embed frontend/dist
 var assets embed.FS
+
+var (
+	window *application.WebviewWindow
+)
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
 // and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
@@ -49,7 +54,7 @@ func main() {
 	// 'Mac' options tailor the window when running on macOS.
 	// 'BackgroundColour' is the background colour of the window.
 	// 'URL' is the URL that will be loaded into the webview.
-	app.NewWebviewWindowWithOptions(application.WebviewWindowOptions{
+	window = app.NewWebviewWindowWithOptions(application.WebviewWindowOptions{
 		Title:     "Window 1",
 		Frameless: true,
 		Mac: application.MacWindow{
@@ -95,6 +100,7 @@ func main() {
 		}
 	}()
 
+	go setupHotkey()
 	// Run the application. This blocks until the application has been exited.
 	err := app.Run()
 
@@ -102,4 +108,23 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func setupHotkey() {
+	showHideHotkey := hotkey.New([]hotkey.Modifier{hotkey.ModOption}, hotkey.KeySpace)
+	if err := showHideHotkey.Register(); err != nil {
+		log.Println(err)
+		return
+	}
+
+	go func() {
+		for range showHideHotkey.Keydown() {
+			// log.Println("Pressed")
+			if window.IsVisible() {
+				window.Hide()
+			} else {
+				window.Show()
+			}
+		}
+	}()
 }
