@@ -5,9 +5,9 @@ import (
 	_ "embed"
 	"log"
 	"runtime"
-	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
 	"github.com/wailsapp/wails/v3/pkg/icons"
 	"golang.design/x/hotkey"
 )
@@ -67,8 +67,13 @@ func main() {
 		BackgroundColour: application.NewRGBA(0, 0, 0, 0),
 		// BackgroundType:   application.BackgroundTypeTransparent,
 		Width:         600,
-		Height:        80,
+		Height:        50,
 		DisableResize: true,
+		KeyBindings: map[string]func(window *application.WebviewWindow){
+			"escape": func(window *application.WebviewWindow) {
+				window.Hide()
+			},
+		},
 	})
 
 	systemTray := app.NewSystemTray()
@@ -90,17 +95,11 @@ func main() {
 	})
 	systemTray.SetMenu(myMenu)
 
-	// Create a goroutine that emits an event containing the current time every second.
-	// The frontend can listen to this event and update the UI accordingly.
-	go func() {
-		for {
-			now := time.Now().Format(time.RFC1123)
-			app.EmitEvent("time", now)
-			time.Sleep(time.Second)
-		}
-	}()
+	window.OnWindowEvent(events.Common.WindowLostFocus, func(e *application.WindowEvent) {
+		window.Hide()
+	})
 
-	go setupHotkey()
+	go handleHotkey()
 	// Run the application. This blocks until the application has been exited.
 	err := app.Run()
 
@@ -110,7 +109,7 @@ func main() {
 	}
 }
 
-func setupHotkey() {
+func handleHotkey() {
 	showHideHotkey := hotkey.New([]hotkey.Modifier{hotkey.ModOption}, hotkey.KeySpace)
 	if err := showHideHotkey.Register(); err != nil {
 		log.Println(err)

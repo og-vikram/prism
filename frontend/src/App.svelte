@@ -1,48 +1,43 @@
 <script>
-  import { GreetService } from "../bindings/changeme";
-  import { Events } from "@wailsio/runtime";
+  let isVisible = false; // Controls visibility of the spotlight search
+  let searchQuery = ""; // The search input
+  let results = []; // Mock search results
+  let suggestions = ["Profile", "Settings", "Help", "Logout", "Dashboard"]; // Example data
 
-  let name = "";
-  let result = "Please enter your name below 👇";
-  let time = "Listening for Time event...";
-
-  const doGreet = () => {
-    let localName = name;
-    if (!localName) {
-      localName = "anonymous";
-    }
-    GreetService.Greet(localName)
-      .then((resultValue) => {
-        result = resultValue;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  // Filters the suggestions based on the query
+  const updateResults = () => {
+    results = suggestions.filter((item) =>
+      item.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
   };
-
-  // Events.On("time", (timeValue) => {
-  //   time = timeValue.data;
-  // });
-  Events.On("blur", () => {
-    window;
-  });
 </script>
 
-<div class="container">
-  <input type="text" class="searchbar" />
+<div class="searchbar">
+  <input
+    id="spotlight-input"
+    type="text"
+    placeholder="What do you want to do?"
+  />
 </div>
 
 <style>
-  /* Put your standard CSS here */
   .searchbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
     width: 100%;
     height: 100%;
-    background: transparent;
-    color: white;
-    font-size: x-large;
   }
-  .container {
-    height: 80px;
-    width: 600px;
+
+  .searchbar input {
+    font-size: large;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    background: none;
+    color: white;
+    border: none;
+    padding-inline: 10px;
   }
 </style>
